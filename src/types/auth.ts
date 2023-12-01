@@ -1,5 +1,6 @@
 import { User } from "src/user/entities/user.entity";
 import { Request as ExpressRequest } from "express";
+import { User as UserNamespace } from "../types";
 
 export namespace Auth {
     export enum Strategy {
@@ -25,9 +26,9 @@ export namespace Auth {
         user: User;
     }
 
-    // // Reposnse
-    // export interface AppResponse {
-    //     token: string;
-    //     user: UserNamespace.AppResponse;
-    // }
+    // Reposnse
+    export interface Response {
+        token: string;
+        user: UserNamespace.Response;
+    }
 }

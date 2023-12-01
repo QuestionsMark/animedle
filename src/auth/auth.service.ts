@@ -3,12 +3,11 @@ import { ResponseService } from 'src/common/response/response.service';
 import { Auth, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { UserService } from 'src/user/user.service';
 import { sign } from 'jsonwebtoken';
-import { COOKIES_CONFIG, SECRET_KEY } from 'config/config';
+import { SECRET_KEY } from 'config/config';
 import { User } from 'src/user/entities/user.entity';
 import { v4 as uuid } from 'uuid';
 import { compare, genSalt, hash } from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
-import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -53,8 +52,7 @@ export class AuthService {
         return this.responseService.sendSuccessfullResponse(await this.userService.getUserResponse(id));
     }
 
-    async login(loginDto: LoginDto, res: Response) {
-        // checkValidation(loginDto, LoginSchema);
+    async login(loginDto: LoginDto): Promise<ServerSuccessfullResponse<Auth.Response>> {
         const { email, password } = loginDto;
         const user = await User.findOne({
             where: {
@@ -68,20 +66,16 @@ export class AuthService {
 
         const token = this.createToken(await this.generateToken(user));
 
-        return res
-            .cookie(Auth.CookieName.AuthToken, token.accessToken, COOKIES_CONFIG)
-            .json(this.responseService.sendSuccessfullResponse(await this.userService.getUserResponse(user.id)));
+        return this.responseService.sendSuccessfullResponse({
+            token: token.accessToken,
+            user: await this.userService.getUserResponse(user.id),
+        });
     }
 
-    async logout(user: User, res: Response) {
-        try {
-            user.currentTokenId = null;
-            await user.save();
-            res.clearCookie(Auth.CookieName.AuthToken, COOKIES_CONFIG);
-            return res.status(200).json(this.responseService.sendSuccessfullResponse('Successfully logged out!'));
-        } catch (e) {
-            console.error(e);
-            return res.status(500).json(this.responseService.sendErrorResponse('Something went wrong, try again later.'));
-        }
+    async logout(user: User): Promise<ServerSuccessfullResponse<string>> {
+        user.currentTokenId = null;
+        await user.save();
+
+        return this.responseService.sendSuccessfullResponse('Successfully logged out!');
     }
 }

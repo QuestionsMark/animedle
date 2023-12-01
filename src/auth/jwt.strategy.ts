@@ -4,13 +4,14 @@ import { Strategy } from 'passport-jwt';
 import { SECRET_KEY } from "config/config";
 import { User } from "../user/entities/user.entity";
 import { Auth } from "src/types";
+import { Request } from "express";
 
-const cookieExtractor = (req: any): null | string => {
-    return (req && req.cookies) ? (req.cookies?.jwt ?? null) : null;
+const cookieExtractor = (req: Request): null | string => {
+    return (req && req.headers) ? (req.header('X-authentication-token') ?? null) : null;
 }
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, Auth.Strategy.Jwt) {
     constructor() {
         super({
             jwtFromRequest: cookieExtractor,

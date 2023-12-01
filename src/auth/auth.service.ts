@@ -48,7 +48,7 @@ export class AuthService {
         return hash(password, salt);
     };
 
-    async isLogged(id: string): Promise<ServerSuccessfullResponse<UserNamespace.Response>> {
+    async isLogged(id: string): Promise<ServerSuccessfullResponse<UserNamespace.ContextValue>> {
         return this.responseService.sendSuccessfullResponse(await this.userService.getUserResponse(id));
     }
 

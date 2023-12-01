@@ -7,6 +7,7 @@ import { DB_CONNECTION } from 'config/db.config';
 import { ResponseModule } from './common/response/response.module';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
+import { AnimedleModule } from './animedle/animedle.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { FileModule } from './file/file.module';
     AuthModule,
     UserModule,
     FileModule,
+    AnimedleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

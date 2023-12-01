@@ -32,7 +32,7 @@ export class AuthController {
   @UseGuards(AuthGuard(Auth.Strategy.Jwt))
   async isLogged(
     @UserObject() user: User,
-  ): Promise<ServerSuccessfullResponse<UserNamespace.Response>> {
+  ): Promise<ServerSuccessfullResponse<UserNamespace.ContextValue>> {
     return this.authService.isLogged(user.id);
   }
 }

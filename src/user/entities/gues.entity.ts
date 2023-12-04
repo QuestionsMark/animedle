@@ -15,6 +15,12 @@ export class Gues extends BaseEntity {
     })
     title: string;
 
+    @Column({
+        type: 'mediumint',
+        unsigned: true,
+    })
+    animeId: number;
+
     @Column()
     isCorrect: boolean;
 

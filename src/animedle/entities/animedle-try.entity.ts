@@ -28,6 +28,12 @@ export class AnimedleTry extends BaseEntity {
     })
     hint: string | null;
 
+    @Column({
+        type: 'boolean',
+        default: false,
+    })
+    isFinished: boolean;
+
     @OneToMany(() => Gues, e => e.animedleTry)
     gueses: Gues[];
 

@@ -14,46 +14,16 @@ export class Animedle extends BaseEntity {
     anime: string;
 
     @Column({
+        type: 'mediumint',
+        unsigned: true,
+    })
+    animeId: number;
+
+    @Column({
         type: 'simple-array',
         nullable: false,
     })
     hintsToChoose: AnimedleNamespace.HintType[];
-
-    @Column({
-        type: 'simple-array',
-        nullable: false,
-    })
-    genres: string[];
-
-    @Column()
-    year: number;
-
-    @Column({
-        type: 'enum',
-        enum: AnimedleNamespace.Season,
-    })
-    season: AnimedleNamespace.Season;
-
-    @Column()
-    episodes: number;
-
-    @Column()
-    familiarAnime: number;
-
-    @Column()
-    studio: string;
-
-    @Column({
-        type: 'enum',
-        enum: AnimedleNamespace.Format,
-    })
-    format: AnimedleNamespace.Format;
-
-    @Column()
-    averageRate: number;
-
-    @Column()
-    popularity: number;
 
     @OneToMany(() => AnimedleTry, e => e.animedle)
     animedleTries: AnimedleTry[];

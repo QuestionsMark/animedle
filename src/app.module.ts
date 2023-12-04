@@ -8,6 +8,7 @@ import { ResponseModule } from './common/response/response.module';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
 import { AnimedleModule } from './animedle/animedle.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AnimedleModule } from './animedle/animedle.module';
     UserModule,
     FileModule,
     AnimedleModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

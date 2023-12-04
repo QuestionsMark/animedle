@@ -7,13 +7,13 @@ import { User } from 'src/user/entities/user.entity';
 
 @Controller('animedle')
 export class AnimedleController {
-  constructor(private readonly animedleService: AnimedleService) { }
+    constructor(private readonly animedleService: AnimedleService) { }
 
-  @Get()
-  @UseGuards(AuthGuard(Auth.Strategy.Jwt))
-  findActual(
-    @UserObject() user: User,
-  ): Promise<ServerSuccessfullResponse<Animedle.ContextValue>> {
-    return this.animedleService.findActual(user);
-  }
+    @Get()
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    findActual(
+        @UserObject() user: User,
+    ): Promise<ServerSuccessfullResponse<Animedle.ContextValue>> {
+        return this.animedleService.findActual(user);
+    }
 }

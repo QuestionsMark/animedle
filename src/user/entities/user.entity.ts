@@ -30,10 +30,25 @@ export class User extends BaseEntity {
     })
     currentTokenId: string | null;
 
+    @Column({
+        type: 'smallint',
+        unsigned: true,
+    })
+    streak: number;
+
+    @Column({
+        type: 'smallint',
+        unsigned: true,
+    })
+    winStreak: number;
+
     @OneToOne(() => FileItem)
     @JoinColumn()
     avatar: FileItem;
 
-    @OneToMany(() => AnimedleTry, e => e.animedle)
+    @OneToMany(() => AnimedleTry, e => e.user)
     animedleTries: AnimedleTry[];
+
+    @OneToMany(() => FileItem, e => e.userSkin)
+    skins: FileItem[];
 }

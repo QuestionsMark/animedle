@@ -24,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, Auth.Strategy.Jwt) {
             return done(new UnauthorizedException(), null);
         }
         const user = await User.findOne({
+            relations: ['avatar', 'skins'],
             where: {
                 currentTokenId: payload.id,
             },

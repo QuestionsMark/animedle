@@ -1,11 +1,12 @@
 import * as path from 'path';
-import { unlink } from 'fs/promises';
+import { unlink, writeFile } from 'fs/promises';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { multerStorageDir } from 'src/utils/multer.util';
 import { FileItem } from './entities/file.entity';
 import { ResponseService } from 'src/common/response/response.service';
 import { MulterFile } from 'src/types';
+import { v4 as uuid } from "uuid";
 
 @Injectable()
 export class FileService {
@@ -50,5 +51,12 @@ export class FileService {
         } catch (e) {
             res.status(500).json(this.responseService.sendErrorResponse('Something went wrong, try again later.'));
         }
+    }
+
+    async saveFile(base64: string): Promise<string> {
+        const filename = `${uuid()}.png`;
+        await writeFile(`storage/${filename}`, base64, 'base64');
+
+        return filename;
     }
 }

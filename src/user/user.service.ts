@@ -9,6 +9,7 @@ import { AnimedleService } from 'src/animedle/animedle.service';
 import { AnimedleTry } from 'src/animedle/entities/animedle-try.entity';
 import { GuesDto } from './dto/gues.dto';
 import { Gues } from './entities/gues.entity';
+import { ProfileService } from 'src/profile/profile.service';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
         @Inject(ResponseService) private responseService: ResponseService,
         @Inject(AuthService) private authService: AuthService,
         @Inject(AnimedleService) private animedleService: AnimedleService,
+        @Inject(ProfileService) private profileService: ProfileService,
     ) { }
 
     async getUserResponse(id: string): Promise<UserNamespace.ContextValue> {
@@ -36,12 +38,17 @@ export class UserService {
 
         // Validation to do
 
+
         const newUser = new User();
         newUser.avatar = null;
         newUser.passwordHash = await this.authService.hashPassword(password);
         newUser.email = email;
         newUser.username = username;
         await newUser.save();
+        newUser.skins = [];
+        const user = await newUser.save();
+
+        await this.profileService.generateAvatar(user);
 
         return this.responseService.sendSuccessfullResponse('Successfully created an account!');
     }

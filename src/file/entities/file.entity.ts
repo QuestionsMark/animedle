@@ -1,5 +1,5 @@
 import { User } from "src/user/entities/user.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class FileItem extends BaseEntity {
@@ -16,4 +16,7 @@ export class FileItem extends BaseEntity {
 
     @OneToOne(() => User, e => e.avatar)
     user: User;
+
+    @ManyToOne(() => User, e => e.skins)
+    userSkin: User;
 }

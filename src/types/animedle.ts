@@ -70,6 +70,14 @@ export namespace Animedle {
         siteUrl: string;
     }
 
+    // Response
+    export interface Item {
+        id: string;
+        solved: boolean;
+        trials: number;
+        title: string;
+    }
+
     // axios
     export interface IsAnimeTitleCorrectResponse {
         data: {

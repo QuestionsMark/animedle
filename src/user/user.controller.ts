@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UseHintDto } from './dto/use-hint.dto';
-import { Animedle, Auth, ServerSuccessfullResponse } from 'src/types';
+import { Animedle, Auth, History, Profile, ServerSuccessfullResponse } from 'src/types';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObject } from 'src/decorators/user.decorator';
 import { User } from './entities/user.entity';
@@ -30,9 +30,20 @@ export class UserController {
         return this.userService.gues(user, guesDto);
     }
 
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.userService.findOne(+id);
+    // @Get('/profile')
+    // @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    // getProfile(
+    //     @UserObject() user: User,
+    // ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
+    //     return this.userService.getProfile(user);
+    // }
+
+    @Get('/history')
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    getHistory(
+        @UserObject() user: User,
+    ): Promise<ServerSuccessfullResponse<History.ContextValue>> {
+        return this.userService.getHistory(user);
     }
 
     @Patch('/hint')

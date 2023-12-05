@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Animedle as AnimedleNamespace, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
+import { Animedle as AnimedleNamespace, History, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { User } from './entities/user.entity';
 import { ResponseService } from 'src/common/response/response.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -200,5 +200,30 @@ export class UserService {
         await gues.save();
 
         return this.responseService.sendSuccessfullResponse(await this.animedleService.getContextValue(user));
+    }
+
+    async getHistory(user: User): Promise<ServerSuccessfullResponse<History.ContextValue>> {
+        const [animedleTries, count] = await AnimedleTry.findAndCount({
+            relations: ['user', 'gueses', 'animedle'],
+            where: {
+                user: {
+                    id: user.id,
+                },
+                isFinished: true,
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            take: 20,
+        });
+
+        return this.responseService.sendSuccessfullResponse({
+            animedles: animedleTries.map(({ animedle, gueses, id }) => ({
+                id,
+                solved: !!gueses.find(g => g.isCorrect),
+                title: animedle.anime,
+                trials: gueses.length,
+            })),
+        }, count);
     }
 }

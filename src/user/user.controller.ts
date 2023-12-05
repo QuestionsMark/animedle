@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UseHintDto } from './dto/use-hint.dto';
@@ -30,6 +30,15 @@ export class UserController {
         return this.userService.gues(user, guesDto);
     }
 
+    @Post('/avatar')
+    @HttpCode(201)
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    createAvatar(
+        @UserObject() user: User,
+    ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
+        return this.userService.createAvatar(user);
+    }
+
     // @Get('/profile')
     // @UseGuards(AuthGuard(Auth.Strategy.Jwt))
     // getProfile(
@@ -48,11 +57,20 @@ export class UserController {
 
     @Patch('/hint')
     @UseGuards(AuthGuard(Auth.Strategy.Jwt))
-    update(
+    useHint(
         @UserObject() user: User,
         @Body() useHintDto: UseHintDto,
-    ) {
+    ): Promise<ServerSuccessfullResponse<Animedle.ContextValue>> {
         return this.userService.useHint(user, useHintDto);
+    }
+
+    @Patch('/avatar/:skinId')
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    changeAvatar(
+        @UserObject() user: User,
+        @Param('skinId') skinId: string,
+    ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
+        return this.userService.changeAvatar(user, skinId);
     }
 
 }

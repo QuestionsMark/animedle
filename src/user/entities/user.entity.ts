@@ -33,14 +33,30 @@ export class User extends BaseEntity {
     @Column({
         type: 'smallint',
         unsigned: true,
+        default: 0,
     })
     streak: number;
 
     @Column({
         type: 'smallint',
         unsigned: true,
+        default: 0,
     })
     winStreak: number;
+
+    @Column({
+        type: 'mediumint',
+        unsigned: true,
+        default: 0,
+    })
+    points: number;
+
+    @Column({
+        type: 'mediumint',
+        unsigned: true,
+        default: 0,
+    })
+    premiumCoins: number;
 
     @OneToOne(() => FileItem)
     @JoinColumn()

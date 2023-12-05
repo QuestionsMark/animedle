@@ -4,6 +4,8 @@ export namespace Profile {
         username: string;
         streak: number;
         winStreak: number;
+        points: number;
+        premiumCoins: number;
         skins: string[];
     }
 }

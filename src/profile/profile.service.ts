@@ -12,7 +12,7 @@ export class ProfileService {
     ) { }
 
     async getContextValue(user: User): Promise<ProfileNamespace.ContextValue> {
-        const { avatar, username, streak, winStreak, skins } = await User.findOneOrFail({
+        const { avatar, points, premiumCoins, streak, winStreak, skins, username } = await User.findOneOrFail({
             relations: ['avatar', 'skins'],
             where: {
                 id: user.id,
@@ -21,6 +21,8 @@ export class ProfileService {
 
         const response: ProfileNamespace.ContextValue = {
             avatar: avatar.id,
+            points,
+            premiumCoins,
             skins: skins.map(s => s.id),
             streak,
             username,

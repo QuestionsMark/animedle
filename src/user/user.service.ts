@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Animedle as AnimedleNamespace, History, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
+import { Animedle as AnimedleNamespace, History as HistoryNamespace, Profile as ProfileNamespace, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { User } from './entities/user.entity';
 import { ResponseService } from 'src/common/response/response.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -10,6 +10,8 @@ import { AnimedleTry } from 'src/animedle/entities/animedle-try.entity';
 import { GuesDto } from './dto/gues.dto';
 import { Gues } from './entities/gues.entity';
 import { ProfileService } from 'src/profile/profile.service';
+import { ValidationException } from 'src/utils/exceptions.util';
+import { FileItem } from 'src/file/entities/file.entity';
 
 @Injectable()
 export class UserService {
@@ -202,7 +204,9 @@ export class UserService {
         return this.responseService.sendSuccessfullResponse(await this.animedleService.getContextValue(user));
     }
 
-    async getHistory(user: User): Promise<ServerSuccessfullResponse<History.ContextValue>> {
+    async getHistory(user: User): Promise<ServerSuccessfullResponse<HistoryNamespace.ContextValue>> {
+        const animedle = await this.animedleService.getActual();
+
         const [animedleTries, count] = await AnimedleTry.findAndCount({
             relations: ['user', 'gueses', 'animedle'],
             where: {
@@ -218,13 +222,37 @@ export class UserService {
         });
 
         return this.responseService.sendSuccessfullResponse({
-            animedles: animedleTries.map(({ animedle, gueses, id, hintType }) => ({
-                id,
-                solved: !!gueses.find(g => g.isCorrect),
-                title: animedle.anime,
-                trials: gueses.length,
-                withHint: hintType,
-            })),
+            animedles: animedleTries
+                .filter(({ animedle: a }) => a.id !== animedle.id)
+                .map(({ animedle, gueses, id, hintType }) => ({
+                    id,
+                    solved: !!gueses.find(g => g.isCorrect),
+                    title: animedle.anime,
+                    trials: gueses.length,
+                    withHint: hintType,
+                })),
         }, count);
+    }
+
+    async changeAvatar(user: User, skinId: string): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
+        const file = await FileItem.findOneOrFail({
+            where: {
+                id: skinId,
+            },
+        });
+
+        user.avatar = file;
+        await user.save();
+
+        return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user));
+    }
+
+    async createAvatar(user: User): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
+        if (user.premiumCoins < 10) throw new ValidationException("You don't have enough premium coins to generate new skin.");
+        user.premiumCoins = user.premiumCoins - 10;
+        await user.save();
+        await this.profileService.generateAvatar(user);
+
+        return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user));
     }
 }

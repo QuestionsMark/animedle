@@ -76,6 +76,7 @@ export namespace Animedle {
         solved: boolean;
         trials: number;
         title: string;
+        withHint: Animedle.HintType | null;
     }
 
     // axios

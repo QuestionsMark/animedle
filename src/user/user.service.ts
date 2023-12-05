@@ -218,11 +218,12 @@ export class UserService {
         });
 
         return this.responseService.sendSuccessfullResponse({
-            animedles: animedleTries.map(({ animedle, gueses, id }) => ({
+            animedles: animedleTries.map(({ animedle, gueses, id, hintType }) => ({
                 id,
                 solved: !!gueses.find(g => g.isCorrect),
                 title: animedle.anime,
                 trials: gueses.length,
+                withHint: hintType,
             })),
         }, count);
     }

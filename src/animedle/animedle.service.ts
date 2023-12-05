@@ -343,4 +343,40 @@ export class AnimedleService {
 
         return this.responseService.sendSuccessfullResponse(await this.getContextValue(user));
     }
+
+    async findSuggestions(page: number, limit: number, search: string): Promise<ServerSuccessfullResponse<string[]>> {
+        const query = `
+        query ($id: Int, $page: Int, $perPage: Int, $search: String, $format_in: [MediaFormat]) {
+            Page (page: $page, perPage: $perPage) {
+              pageInfo {
+                total
+                currentPage
+                lastPage
+                hasNextPage
+                perPage
+              }
+              media (id: $id, search: $search, format_in: $format_in) {
+                id
+                title {
+                  romaji
+                }
+                format
+              }
+            }
+          }
+        `;
+
+        const variables = {
+            page,
+            perPage: limit,
+            search,
+            format_in: [AnimedleNamespace.Format.Movie, AnimedleNamespace.Format.OVA, AnimedleNamespace.Format.Special, AnimedleNamespace.Format.TV],
+        };
+
+        const anime = await this.callAnilistApi<AnimedleNamespace.SuggestionsResponse>(query, variables);
+
+        const suggestions = Array.from(new Set(anime.data.Page.media.map(a => a.title.romaji)));
+
+        return this.responseService.sendSuccessfullResponse(suggestions, 0);
+    }
 }

@@ -131,4 +131,24 @@ export namespace Animedle {
             };
         };
     }
+
+    export interface SuggestionsResponse {
+        data: {
+            Page: {
+                pageInfo: {
+                    total: number;
+                    currentPage: number;
+                    lastPage: number;
+                    hasNextPage: boolean;
+                    perPage: number;
+                };
+                media: {
+                    title: {
+                        romaji: string;
+                    };
+                    format: Format;
+                }[];
+            };
+        };
+    }
 }

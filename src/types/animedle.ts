@@ -151,4 +151,24 @@ export namespace Animedle {
             };
         };
     }
+
+    export interface DrawAnimeResponse {
+        data: {
+            Page: {
+                pageInfo: {
+                    total: number;
+                    lastPage: number;
+                    perPage: number;
+                };
+                media: {
+                    id: number;
+                    title: {
+                        romaji: string;
+                    };
+                    format: Format;
+                    popularity: number;
+                }[];
+            };
+        };
+    }
 }

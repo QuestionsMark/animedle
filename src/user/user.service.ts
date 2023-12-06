@@ -9,7 +9,7 @@ import { AnimedleService } from 'src/animedle/animedle.service';
 import { AnimedleTry } from 'src/animedle/entities/animedle-try.entity';
 import { GuesDto } from './dto/gues.dto';
 import { Gues } from './entities/gues.entity';
-import { ProfileService } from 'src/profile/profile.service';
+import { ProfileService } from 'src/common/profile/profile.service';
 import { ValidationException } from 'src/utils/exceptions.util';
 import { FileItem } from 'src/file/entities/file.entity';
 
@@ -53,10 +53,6 @@ export class UserService {
         await this.profileService.generateAvatar(user);
 
         return this.responseService.sendSuccessfullResponse('Successfully created an account!');
-    }
-
-    findOne(id: number) {
-        return `This action returns a #${id} user`;
     }
 
     async useHint(user: User, useHintDto: UseHintDto): Promise<ServerSuccessfullResponse<AnimedleNamespace.ContextValue>> {
@@ -158,7 +154,7 @@ export class UserService {
     async gues(user: User, guesDto: GuesDto): Promise<ServerSuccessfullResponse<AnimedleNamespace.ContextValue>> {
         const animedle = await this.animedleService.getActual();
 
-        const animedleTry = await AnimedleTry.findOneOrFail({
+        const animedleTry = await AnimedleTry.findOne({
             relations: ['gueses'],
             where: {
                 user: {
@@ -169,22 +165,48 @@ export class UserService {
                 },
             }
         });
-        if (animedleTry.isFinished || animedleTry.gueses.length >= 10) throw new BadRequestException('Your animedle attempt is over');
+        if (!animedleTry) throw new ValidationException('Time is over!. New animedle just started!');
+        if (animedleTry.isFinished || animedleTry.gueses.length >= 10) throw new ValidationException('Your animedle attempt is over');
+
+        if (animedleTry.gueses.length === 0) {
+            if (user.bestStreak < user.streak + 1) {
+                user.bestStreak = user.streak + 1;
+            }
+            user.streak++;
+            await user.save();
+        }
 
         const animeId = await this.animedleService.isAnimeTitleCorrect(guesDto.title);
-        if (animeId === null) throw new BadRequestException('Your anime title is incorrect. Choose one of proposed.');
+        if (animeId === null) throw new ValidationException('Your anime title is incorrect. Choose one of proposed.');
 
         const anime = await this.animedleService.getAnime(animeId);
-        if (!anime) throw new BadRequestException('Anime not found!');
+        if (!anime) throw new ValidationException('Anime not found!');
 
         const actualAnime = await this.animedleService.getAnime(animedle.animeId);
-        if (!anime) throw new BadRequestException('Anime not found!');
-
+        if (!anime) throw new ValidationException('Anime not found!');
 
         const { id, title } = anime.data.Media;
 
+        const duplicatedAnime = animedleTry.gueses.find(g => g.animeId === id)
+        if (duplicatedAnime) throw new ValidationException("You've already mentioned this anime before");
+
         const answears = this.animedleService.getAnswears(anime, actualAnime);
         const isCorrect = animedle.animeId === id;
+
+        if (isCorrect) {
+            if (user.bestWinStreak < user.winStreak + 1) {
+                user.bestWinStreak = user.winStreak + 1;
+            }
+            user.winStreak++;
+            user.points++;
+            user.premiumCoins++;
+            await user.save();
+        } else {
+            if (animedleTry.gueses.length === 9) {
+                user.winStreak = 0;
+                await user.save();
+            }
+        }
 
         const gues = new Gues();
         gues.answearsJSON = JSON.stringify(answears);
@@ -193,7 +215,7 @@ export class UserService {
         gues.animeId = id;
         await gues.save();
 
-        if (isCorrect) {
+        if (isCorrect || animedleTry.gueses.length === 9) {
             animedleTry.isFinished = true;
             await animedleTry.save();
         }
@@ -234,6 +256,10 @@ export class UserService {
         }, count);
     }
 
+    async getProfile(user: User): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
+        return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user))
+    }
+
     async changeAvatar(user: User, skinId: string): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
         const file = await FileItem.findOneOrFail({
             where: {
@@ -255,4 +281,5 @@ export class UserService {
 
         return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user));
     }
+
 }

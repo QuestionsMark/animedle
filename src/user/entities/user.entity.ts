@@ -42,7 +42,21 @@ export class User extends BaseEntity {
         unsigned: true,
         default: 0,
     })
+    bestStreak: number;
+
+    @Column({
+        type: 'smallint',
+        unsigned: true,
+        default: 0,
+    })
     winStreak: number;
+
+    @Column({
+        type: 'smallint',
+        unsigned: true,
+        default: 0,
+    })
+    bestWinStreak: number;
 
     @Column({
         type: 'mediumint',

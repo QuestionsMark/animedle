@@ -1,6 +1,7 @@
 import { ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 import { ResponseService } from 'src/common/response/response.service';
+import { ValidationException } from 'src/utils/exceptions.util';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 
 @Catch()
@@ -43,6 +44,10 @@ export class GlobalExpectionFilter implements ExceptionFilter {
             status = 400;
             message = 'Element already exist.';
             problems = [];
+        } else if (exception instanceof ValidationException) {
+            status = 400;
+            message = exception.message;
+            problems = exception.problems || [];
         } else if (exception instanceof EntityNotFoundError) {
             status = 404;
             message = 'Entity not found.';

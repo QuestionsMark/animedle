@@ -5,6 +5,7 @@ import { ResponseService } from 'src/common/response/response.service';
 import { User } from 'src/user/entities/user.entity';
 import { AnimedleTry } from './entities/animedle-try.entity';
 import { HttpService } from '@nestjs/axios';
+import { ANIME_POPULARITY_MIN } from 'config/config';
 
 @Injectable()
 export class AnimedleService {
@@ -159,7 +160,7 @@ export class AnimedleService {
         const { averageScore, episodes, format, genres, id, popularity, relations, season, siteUrl, startDate, studios, title } = anime.data.Media;
 
         return {
-            averageScore,
+            averageScore: averageScore || 0,
             episodes,
             familiarAnime: relations.edges.filter(a => [AnimedleNamespace.Format.Movie, AnimedleNamespace.Format.OVA, AnimedleNamespace.Format.Special, AnimedleNamespace.Format.TV].includes(a.node.format)).length,
             format,
@@ -168,7 +169,7 @@ export class AnimedleService {
             popularity,
             season,
             siteUrl,
-            studio: studios.edges.find(s => s.isMain)?.node.name || studios.edges[0].node.name,
+            studio: studios.edges.find(s => s.isMain)?.node.name || studios.edges[0]?.node.name || '-',
             title: title.romaji,
             year: startDate.year,
         };
@@ -277,7 +278,7 @@ export class AnimedleService {
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
-                guesAnswear: season,
+                guesAnswear: season || '-',
             });
         }
 
@@ -313,8 +314,51 @@ export class AnimedleService {
         return answears;
     }
 
-    create() {
-        return 'This action adds a new animedle';
+    async create(): Promise<void> {
+        const query = `
+        query ($page: Int, $perPage: Int, $format_in: [MediaFormat], $popularity_greater: Int) {
+            Page (page: $page, perPage: $perPage) {
+            pageInfo {
+                total
+                lastPage
+                perPage
+            }
+            media (popularity_greater: $popularity_greater, format_in: $format_in) {
+                id
+                title {
+                romaji
+                }
+                format
+                popularity
+            }
+            }
+        }
+        `;
+
+        const getVariables = () => {
+            return {
+                page: Math.floor(Math.random() * 3 + 1),
+                perPage: 50,
+                format_in: [AnimedleNamespace.Format.Movie, AnimedleNamespace.Format.OVA, AnimedleNamespace.Format.Special, AnimedleNamespace.Format.TV],
+                popularity_greater: ANIME_POPULARITY_MIN,
+            };
+        }
+
+        const data = await this.callAnilistApi<AnimedleNamespace.DrawAnimeResponse>(query, getVariables());
+        const { id, title } = data.data.Page.media[Math.floor(Math.random() * data.data.Page.media.length)];
+        const hints = [AnimedleNamespace.HintType.AverageScore, AnimedleNamespace.HintType.Episodes, AnimedleNamespace.HintType.FamiliarAnime, AnimedleNamespace.HintType.Format, AnimedleNamespace.HintType.Genre, AnimedleNamespace.HintType.Popularity, AnimedleNamespace.HintType.Season, AnimedleNamespace.HintType.Studio, AnimedleNamespace.HintType.Year];
+        const hintsToChoose: AnimedleNamespace.HintType[] = [];
+        for (let i = 0; i < 3; i++) {
+            const index = Math.floor(Math.random() * hints.length);
+            hintsToChoose.push(hints[index]);
+            hints.splice(index, 1);
+        }
+
+        const newAnimedle = new Animedle();
+        newAnimedle.anime = title.romaji;
+        newAnimedle.animeId = id;
+        newAnimedle.hintsToChoose = hintsToChoose;
+        await newAnimedle.save();
     }
 
     async findActual(user: User): Promise<ServerSuccessfullResponse<AnimedleNamespace.ContextValue>> {

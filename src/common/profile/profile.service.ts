@@ -45,9 +45,4 @@ export class ProfileService {
 
         return this.responseService.sendSuccessfullResponse(await this.getContextValue(user));
     }
-
-    async findOne(user: User): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
-        return this.responseService.sendSuccessfullResponse(await this.getContextValue(user))
-    }
-
 }

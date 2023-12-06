@@ -39,20 +39,20 @@ export class UserController {
         return this.userService.createAvatar(user);
     }
 
-    // @Get('/profile')
-    // @UseGuards(AuthGuard(Auth.Strategy.Jwt))
-    // getProfile(
-    //     @UserObject() user: User,
-    // ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
-    //     return this.userService.getProfile(user);
-    // }
-
     @Get('/history')
     @UseGuards(AuthGuard(Auth.Strategy.Jwt))
     getHistory(
         @UserObject() user: User,
     ): Promise<ServerSuccessfullResponse<History.ContextValue>> {
         return this.userService.getHistory(user);
+    }
+
+    @Get('/profile')
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    findOne(
+        @UserObject() user: User,
+    ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
+        return this.userService.getProfile(user);
     }
 
     @Patch('/hint')

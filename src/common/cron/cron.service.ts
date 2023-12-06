@@ -17,7 +17,7 @@ export class CronService {
         await user.save();
     }
 
-    @Cron(CronExpression.Every5Mins, {
+    @Cron(CronExpression.EveryMidnight, {
         timeZone: 'Europe/Warsaw',
     })
     async updateStatistics() {
@@ -66,7 +66,7 @@ export class CronService {
         }
     }
 
-    @Cron(CronExpression.Every5Mins, {
+    @Cron(CronExpression.EveryMidnight, {
         timeZone: 'Europe/Warsaw',
     })
     async createNewAnimedle() {

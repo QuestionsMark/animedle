@@ -18,11 +18,10 @@ export class OpenaiService {
     }
 
     getPrompt() {
-        const genders = ['male', 'female'];
-        const dimensions = ['2D', '3D'];
-        const studios = [];
+        const genders = ['girl', 'boy'];
+        const studios = ['Madhouse', 'Studio Bones', 'Kyoto Animation', 'Wit Studio', 'Toei Animation', 'MAPPA Studio', 'Studio Ghibli', 'Sunrise Studio', 'A-1 Pictures', 'Ufotable', 'Studio Pierrot', 'Production I.G', 'P.A.Works', 'J.C.Staff'];
 
-        return `One Anime character. A lot of details, ${dimensions[Math.floor(Math.random() * dimensions.length)]} japanese anime style. Character gender is ${genders[Math.floor(Math.random() * genders.length)]}.`;
+        return `2D anime teenage ${genders[Math.floor(Math.random() * genders.length)]} in the style of "${studios[Math.floor(Math.random() * studios.length)]}" studio . A lot of details, japanese anime style.`;
     }
 
     async generateAvatar(): Promise<FileItem> {

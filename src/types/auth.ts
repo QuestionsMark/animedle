@@ -5,7 +5,6 @@ import { User as UserNamespace } from "../types";
 export namespace Auth {
     export enum Strategy {
         Jwt = 'jwt',
-        HttpHeaderJwt = 'http-header-jwt',
     }
 
     export enum CookieName {
@@ -29,6 +28,6 @@ export namespace Auth {
     // Reposnse
     export interface Response {
         token: string;
-        user: UserNamespace.Response;
+        user: UserNamespace.ContextValue;
     }
 }

@@ -186,16 +186,19 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: averageScore / 10,
+                hintType: AnimedleNamespace.HintType.AverageScore,
             });
         } else if (Math.abs(averageScore - actualAverageScore) <= 0.5) {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Almost,
                 guesAnswear: averageScore / 10,
+                hintType: AnimedleNamespace.HintType.AverageScore,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: averageScore / 10,
+                hintType: AnimedleNamespace.HintType.AverageScore,
             });
         }
 
@@ -203,11 +206,13 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: episodes,
+                hintType: AnimedleNamespace.HintType.Episodes,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: episodes,
+                hintType: AnimedleNamespace.HintType.Episodes,
             });
         }
 
@@ -215,16 +220,19 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: familiarAnime,
+                hintType: AnimedleNamespace.HintType.FamiliarAnime,
             });
         } else if (Math.abs(familiarAnime - actualFamiliarAnime) === 1) {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Almost,
                 guesAnswear: familiarAnime,
+                hintType: AnimedleNamespace.HintType.FamiliarAnime,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: familiarAnime,
+                hintType: AnimedleNamespace.HintType.FamiliarAnime,
             });
         }
 
@@ -232,11 +240,13 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: format,
+                hintType: AnimedleNamespace.HintType.Format,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: format,
+                hintType: AnimedleNamespace.HintType.Format,
             });
         }
 
@@ -245,11 +255,13 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: randomGenre,
+                hintType: AnimedleNamespace.HintType.Genre,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: randomGenre,
+                hintType: AnimedleNamespace.HintType.Genre,
             });
         }
 
@@ -257,16 +269,19 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: Intl.NumberFormat('en', { maximumSignificantDigits: 2 }).format(popularity),
+                hintType: AnimedleNamespace.HintType.Popularity,
             });
         } else if (Math.abs(popularity - actualPopularity) <= popularity * 0.2) {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Almost,
                 guesAnswear: Intl.NumberFormat('en', { maximumSignificantDigits: 2 }).format(popularity),
+                hintType: AnimedleNamespace.HintType.Popularity,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: Intl.NumberFormat('en', { maximumSignificantDigits: 2 }).format(popularity),
+                hintType: AnimedleNamespace.HintType.Popularity,
             });
         }
 
@@ -274,11 +289,13 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: season,
+                hintType: AnimedleNamespace.HintType.Season,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: season || '-',
+                hintType: AnimedleNamespace.HintType.Season,
             });
         }
 
@@ -286,11 +303,13 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: studio,
+                hintType: AnimedleNamespace.HintType.Studio,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: studio,
+                hintType: AnimedleNamespace.HintType.Studio,
             });
         }
 
@@ -298,16 +317,19 @@ export class AnimedleService {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Correct,
                 guesAnswear: year,
+                hintType: AnimedleNamespace.HintType.Year,
             });
         } else if (Math.abs(popularity - actualPopularity) <= 2) {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Almost,
                 guesAnswear: year,
+                hintType: AnimedleNamespace.HintType.Year,
             });
         } else {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Incorrect,
                 guesAnswear: year,
+                hintType: AnimedleNamespace.HintType.Year,
             });
         }
 

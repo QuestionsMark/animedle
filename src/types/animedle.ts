@@ -21,12 +21,6 @@ export namespace Animedle {
         Incorrect = 'Incorrect',
     }
 
-    export interface Answear {
-        guesAnswear: string | number;
-        correctness: Correctness;
-        answearHint?: string;
-    }
-
     export enum HintType {
         Genre = 'Genre',
         Year = 'Year',
@@ -37,6 +31,12 @@ export namespace Animedle {
         Format = 'Format',
         AverageScore = 'Average Score',
         Popularity = 'Popularity',
+    }
+
+    export interface Answear {
+        guesAnswear: string | number;
+        correctness: Correctness;
+        hintType: HintType;
     }
 
     export interface Hint {

@@ -275,9 +275,11 @@ export class UserService {
 
     async createAvatar(user: User): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
         if (user.premiumCoins < 10) throw new ValidationException("You don't have enough premium coins to generate new skin.");
+
+        await this.profileService.generateAvatar(user);
+
         user.premiumCoins = user.premiumCoins - 10;
         await user.save();
-        await this.profileService.generateAvatar(user);
 
         return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user));
     }

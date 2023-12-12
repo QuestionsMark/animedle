@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { OpenaiService } from 'src/common/openai/openai.service';
 import { ResponseService } from 'src/common/response/response.service';
+import { FileItem } from 'src/file/entities/file.entity';
 import { Profile as ProfileNamespace, ServerSuccessfullResponse } from 'src/types';
 import { User } from 'src/user/entities/user.entity';
 
@@ -13,9 +14,17 @@ export class ProfileService {
 
     async getContextValue(user: User): Promise<ProfileNamespace.ContextValue> {
         const { avatar, bestStreak, bestWinStreak, points, premiumCoins, streak, winStreak, skins, username } = await User.findOneOrFail({
-            relations: ['avatar', 'skins'],
+            relations: ['avatar'],
             where: {
                 id: user.id,
+            },
+        });
+
+        const [, count] = await FileItem.findAndCount({
+            where: {
+                userSkin: {
+                    id: user.id,
+                },
             },
         });
 
@@ -25,7 +34,7 @@ export class ProfileService {
             bestWinStreak,
             points,
             premiumCoins,
-            skins: skins.map(s => s.id),
+            skinsCount: count,
             streak,
             username,
             winStreak,

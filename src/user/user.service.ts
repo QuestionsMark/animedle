@@ -261,6 +261,25 @@ export class UserService {
         return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user))
     }
 
+    async getSkins(user: User, page: number, limit: number): Promise<ServerSuccessfullResponse<string[]>> {
+        const [skins, count] = await FileItem.findAndCount({
+            where: {
+                userSkin: {
+                    id: user.id,
+                },
+            },
+            order: {
+                createdAt: 'DESC',
+            },
+            skip: this.responseService.skip(page, limit),
+            take: this.responseService.limit(limit),
+        });
+
+        const results = skins.map(s => s.id);
+
+        return this.responseService.sendSuccessfullResponse(results, count);
+    }
+
     async changeAvatar(user: User, skinId: string): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
         const file = await FileItem.findOneOrFail({
             where: {

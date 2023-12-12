@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UseHintDto } from './dto/use-hint.dto';
@@ -49,10 +49,20 @@ export class UserController {
 
     @Get('/profile')
     @UseGuards(AuthGuard(Auth.Strategy.Jwt))
-    findOne(
+    getProfile(
         @UserObject() user: User,
     ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
         return this.userService.getProfile(user);
+    }
+
+    @Get('/skins')
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    getSkins(
+        @UserObject() user: User,
+        @Query('page') page: number,
+        @Query('limit') limit: number,
+    ): Promise<ServerSuccessfullResponse<string[]>> {
+        return this.userService.getSkins(user, page, limit);
     }
 
     @Patch('/hint')

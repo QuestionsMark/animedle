@@ -8,6 +8,6 @@ export namespace Profile {
         bestWinStreak: number;
         points: number;
         premiumCoins: number;
-        skins: string[];
+        skinsCount: number;
     }
 }

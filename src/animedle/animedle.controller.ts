@@ -19,7 +19,6 @@ export class AnimedleController {
 
     @Get('/suggestions')
     @UseGuards(AuthGuard(Auth.Strategy.Jwt))
-    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
     findSuggestions(
         @Query('page') page: number,
         @Query('limit') limit: number,

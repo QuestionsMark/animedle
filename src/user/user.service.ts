@@ -280,6 +280,22 @@ export class UserService {
         return this.responseService.sendSuccessfullResponse(results, count);
     }
 
+    async getTop(page: number, limit: number): Promise<ServerSuccessfullResponse<UserNamespace.RankingItem[]>> {
+        const [users, count] = await User.findAndCount({
+            relations: ['avatar'],
+            order: {
+                points: 'DESC',
+                bestWinStreak: 'DESC',
+            },
+            skip: this.responseService.skip(page, limit),
+            take: this.responseService.limit(limit),
+        });
+
+        const results = users.map(({ avatar, bestWinStreak, id, points, username }) => ({ avatar: avatar.id, bestWinStreak, id, points, username }));
+
+        return this.responseService.sendSuccessfullResponse(results, count);
+    }
+
     async changeAvatar(user: User, skinId: string): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
         const file = await FileItem.findOneOrFail({
             where: {

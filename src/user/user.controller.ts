@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards, Param, Query }
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UseHintDto } from './dto/use-hint.dto';
-import { Animedle, Auth, History, Profile, ServerSuccessfullResponse } from 'src/types';
+import { Animedle, Auth, History, Profile, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObject } from 'src/decorators/user.decorator';
 import { User } from './entities/user.entity';
@@ -63,6 +63,15 @@ export class UserController {
         @Query('limit') limit: number,
     ): Promise<ServerSuccessfullResponse<string[]>> {
         return this.userService.getSkins(user, page, limit);
+    }
+
+    @Get('/top')
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    getTop(
+        @Query('page') page: number,
+        @Query('limit') limit: number,
+    ): Promise<ServerSuccessfullResponse<UserNamespace.RankingItem[]>> {
+        return this.userService.getTop(page, limit);
     }
 
     @Patch('/hint')

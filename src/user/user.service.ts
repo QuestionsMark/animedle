@@ -246,12 +246,13 @@ export class UserService {
         return this.responseService.sendSuccessfullResponse({
             animedles: animedleTries
                 .filter(({ animedle: a }) => a.id !== animedle.id)
-                .map(({ animedle, gueses, id, hintType }) => ({
+                .map(({ animedle, gueses, id, hintType, createdAt }) => ({
                     id,
                     solved: !!gueses.find(g => g.isCorrect),
                     title: animedle.anime,
                     trials: gueses.length,
                     withHint: hintType,
+                    createdAt,
                 })),
         }, count);
     }

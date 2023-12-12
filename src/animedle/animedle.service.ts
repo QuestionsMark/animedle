@@ -319,7 +319,7 @@ export class AnimedleService {
                 guesAnswear: year,
                 hintType: AnimedleNamespace.HintType.Year,
             });
-        } else if (Math.abs(popularity - actualPopularity) <= 2) {
+        } else if (Math.abs(year - actualPopularity) <= 2) {
             answears.push({
                 correctness: AnimedleNamespace.Correctness.Almost,
                 guesAnswear: year,

@@ -77,6 +77,7 @@ export namespace Animedle {
         trials: number;
         title: string;
         withHint: Animedle.HintType | null;
+        createdAt: Date;
     }
 
     // axios

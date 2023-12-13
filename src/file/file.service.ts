@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { unlink, writeFile } from 'fs/promises';
+import { readdir, unlink, writeFile } from 'fs/promises';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { multerStorageDir } from 'src/utils/multer.util';
@@ -58,5 +58,9 @@ export class FileService {
         await writeFile(`storage/${filename}`, base64, 'base64');
 
         return filename;
+    }
+
+    async getDefaultAvatarsFilenames(): Promise<string[]> {
+        return readdir('storage/default-avatars');
     }
 }

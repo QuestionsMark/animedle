@@ -5,6 +5,7 @@ import { ResponseModule } from 'src/common/response/response.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { AnimedleModule } from 'src/animedle/animedle.module';
 import { ProfileModule } from 'src/common/profile/profile.module';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ProfileModule } from 'src/common/profile/profile.module';
     forwardRef(() => AuthModule),
     AnimedleModule,
     ProfileModule,
+    FileModule,
   ],
   controllers: [UserController],
   providers: [UserService],

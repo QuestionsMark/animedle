@@ -12,11 +12,14 @@ import { Gues } from './entities/gues.entity';
 import { ProfileService } from 'src/common/profile/profile.service';
 import { ValidationException } from 'src/utils/exceptions.util';
 import { FileItem } from 'src/file/entities/file.entity';
+import { In } from 'typeorm';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @Inject(ResponseService) private responseService: ResponseService,
+        @Inject(FileService) private fileService: FileService,
         @Inject(AuthService) private authService: AuthService,
         @Inject(AnimedleService) private animedleService: AnimedleService,
         @Inject(ProfileService) private profileService: ProfileService,
@@ -47,10 +50,18 @@ export class UserService {
         newUser.email = email;
         newUser.username = username;
         await newUser.save();
-        newUser.skins = [];
-        const user = await newUser.save();
 
-        await this.profileService.generateAvatar(user);
+        const filenames = await this.fileService.getDefaultAvatarsFilenames();
+        const avatars = await FileItem.find({
+            where: {
+                filename: In(filenames),
+            },
+        });
+        const avatar = avatars[Math.floor(Math.random() * avatars.length)];
+
+        newUser.skins = [avatar];
+        newUser.avatar = avatar;
+        await newUser.save();
 
         return this.responseService.sendSuccessfullResponse('Successfully created an account!');
     }

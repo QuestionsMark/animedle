@@ -74,7 +74,7 @@ export namespace Animedle {
     export interface Item {
         id: string;
         solved: boolean;
-        trials: number;
+        tries: number;
         title: string;
         withHint: Animedle.HintType | null;
         createdAt: Date;

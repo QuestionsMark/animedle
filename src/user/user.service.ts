@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Animedle as AnimedleNamespace, History as HistoryNamespace, Profile as ProfileNamespace, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
+import { Animedle as AnimedleNamespace, Profile as ProfileNamespace, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { User } from './entities/user.entity';
 import { ResponseService } from 'src/common/response/response.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -226,7 +226,7 @@ export class UserService {
         return this.responseService.sendSuccessfullResponse(await this.animedleService.getContextValue(user));
     }
 
-    async getHistory(user: User): Promise<ServerSuccessfullResponse<HistoryNamespace.ContextValue>> {
+    async getHistory(user: User, page: number, limit: number): Promise<ServerSuccessfullResponse<AnimedleNamespace.Item[]>> {
         const animedle = await this.animedleService.getActual();
 
         const [animedleTries, count] = await AnimedleTry.findAndCount({
@@ -240,21 +240,22 @@ export class UserService {
             order: {
                 createdAt: 'DESC',
             },
-            take: 20,
+            skip: this.responseService.skip(page, limit),
+            take: this.responseService.limit(limit),
         });
 
-        return this.responseService.sendSuccessfullResponse({
-            animedles: animedleTries
-                .filter(({ animedle: a }) => a.id !== animedle.id)
-                .map(({ animedle, gueses, id, hintType, createdAt }) => ({
-                    id,
-                    solved: !!gueses.find(g => g.isCorrect),
-                    title: animedle.anime,
-                    trials: gueses.length,
-                    withHint: hintType,
-                    createdAt,
-                })),
-        }, count);
+        const results: AnimedleNamespace.Item[] = animedleTries
+            .filter(({ animedle: a }) => a.id !== animedle.id)
+            .map(({ animedle, gueses, id, hintType, createdAt }) => ({
+                id,
+                solved: !!gueses.find(g => g.isCorrect),
+                title: animedle.anime,
+                tries: gueses.length,
+                withHint: hintType,
+                createdAt,
+            }));
+
+        return this.responseService.sendSuccessfullResponse(results, count);
     }
 
     async getProfile(user: User): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {

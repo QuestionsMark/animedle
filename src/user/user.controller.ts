@@ -43,8 +43,10 @@ export class UserController {
     @UseGuards(AuthGuard(Auth.Strategy.Jwt))
     getHistory(
         @UserObject() user: User,
-    ): Promise<ServerSuccessfullResponse<History.ContextValue>> {
-        return this.userService.getHistory(user);
+        @Query('page') page: number,
+        @Query('limit') limit: number,
+    ): Promise<ServerSuccessfullResponse<Animedle.Item[]>> {
+        return this.userService.getHistory(user, page, limit);
     }
 
     @Get('/profile')

@@ -43,7 +43,7 @@ export class UserService {
         const { confirmPassword, email, password, username } = createUserDto;
 
         await createUserSchema.validate(createUserDto);
-        if (username !== confirmPassword) throw new ValidationException('Password and confirm password are not same.');
+        if (password !== confirmPassword) throw new ValidationException('Password and confirm password are not same.');
 
         const newUser = new User();
         newUser.avatar = null;

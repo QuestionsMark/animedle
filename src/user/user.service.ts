@@ -14,6 +14,7 @@ import { ValidationException } from 'src/utils/exceptions.util';
 import { FileItem } from 'src/file/entities/file.entity';
 import { In } from 'typeorm';
 import { FileService } from 'src/file/file.service';
+import { createUserSchema, guessSchema } from 'src/validation';
 
 @Injectable()
 export class UserService {
@@ -41,8 +42,8 @@ export class UserService {
     async create(createUserDto: CreateUserDto): Promise<ServerSuccessfullResponse<string>> {
         const { confirmPassword, email, password, username } = createUserDto;
 
-        // Validation to do
-
+        await createUserSchema.validate(createUserDto);
+        if (username !== confirmPassword) throw new ValidationException('Password and confirm password are not same.');
 
         const newUser = new User();
         newUser.avatar = null;
@@ -163,6 +164,8 @@ export class UserService {
     }
 
     async gues(user: User, guesDto: GuesDto): Promise<ServerSuccessfullResponse<AnimedleNamespace.ContextValue>> {
+        await guessSchema.validate(guesDto);
+
         const animedle = await this.animedleService.getActual();
 
         const animedleTry = await AnimedleTry.findOne({

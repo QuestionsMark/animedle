@@ -8,6 +8,6 @@ export class AppService {
     @Inject(ResponseService) private responseService: ResponseService,
   ) { }
   getHello(): ServerSuccessfullResponse<string> {
-    return this.responseService.sendSuccessfullResponse('Hello World!');
+    return this.responseService.sendSuccessfullResponse('Greetings from Animedle developers!');
   }
 }

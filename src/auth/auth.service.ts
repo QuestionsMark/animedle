@@ -8,6 +8,7 @@ import { User } from 'src/user/entities/user.entity';
 import { v4 as uuid } from 'uuid';
 import { compare, genSalt, hash } from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
+import { loginSchema } from 'src/validation';
 
 @Injectable()
 export class AuthService {
@@ -53,6 +54,8 @@ export class AuthService {
     }
 
     async login(loginDto: LoginDto): Promise<ServerSuccessfullResponse<Auth.Response>> {
+        await loginSchema.validate(loginDto);
+
         const { email, password } = loginDto;
         const user = await User.findOne({
             where: {

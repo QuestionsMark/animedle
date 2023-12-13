@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { ResponseService } from 'src/common/response/response.service';
 import { ValidationException } from 'src/utils/exceptions.util';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
+import { ValidationError } from 'yup';
 
 @Catch()
 export class GlobalExpectionFilter implements ExceptionFilter {
@@ -48,6 +49,9 @@ export class GlobalExpectionFilter implements ExceptionFilter {
             status = 400;
             message = exception.message;
             problems = exception.problems || [];
+        } else if (exception instanceof ValidationError) {
+            status = 400;
+            message = exception.message;
         } else if (exception instanceof EntityNotFoundError) {
             status = 404;
             message = 'Entity not found.';

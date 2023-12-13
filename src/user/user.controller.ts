@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards, Param, Query }
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UseHintDto } from './dto/use-hint.dto';
-import { Animedle, Auth, History, Profile, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
+import { Animedle, Auth, Profile, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObject } from 'src/decorators/user.decorator';
 import { User } from './entities/user.entity';

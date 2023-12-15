@@ -14,7 +14,9 @@ import { ValidationException } from 'src/utils/exceptions.util';
 import { FileItem } from 'src/file/entities/file.entity';
 import { In } from 'typeorm';
 import { FileService } from 'src/file/file.service';
-import { createUserSchema, guessSchema } from 'src/validation';
+import { createUserSchema, deleteUserSchema, guessSchema } from 'src/validation';
+import { compare } from 'bcrypt';
+import { DeleteUserDto } from './dto/delete-user.dto';
 
 @Injectable()
 export class UserService {
@@ -65,6 +67,48 @@ export class UserService {
         await newUser.save();
 
         return this.responseService.sendSuccessfullResponse('Successfully created an account!');
+    }
+
+    async delete(user: User, deleteUserDto: DeleteUserDto): Promise<ServerSuccessfullResponse<string>> {
+        await deleteUserSchema.validate(deleteUserDto);
+        const { password } = deleteUserDto;
+
+        const match = await compare(password, user.passwordHash);
+        if (!match) throw new ValidationException('Invalid password!');
+
+        user.avatar = null;
+        user.skins = [];
+        await user.save();
+
+        const animedleTries = await AnimedleTry.find({
+            where: {
+                user: {
+                    id: user.id,
+                },
+            },
+        });
+
+        for (const animedleTry of animedleTries) {
+            const guesses = await Gues.find({
+                where: {
+                    animedleTry: {
+                        id: animedleTry.id,
+                    },
+                },
+            });
+
+            await animedleTry.save();
+
+            for (const guess of guesses) {
+                await guess.remove();
+            }
+
+            await animedleTry.remove();
+        }
+
+        await user.remove();
+
+        return this.responseService.sendSuccessfullResponse('Goodbay! We hope you will visit us again someday!');
     }
 
     async useHint(user: User, useHintDto: UseHintDto): Promise<ServerSuccessfullResponse<AnimedleNamespace.ContextValue>> {

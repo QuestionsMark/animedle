@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { OPENAI_API_KEY } from "config/config";
 import { OpenAI } from "openai";
 import { FileItem } from "src/file/entities/file.entity";
 import { FileService } from "src/file/file.service";
@@ -14,7 +13,7 @@ export class OpenaiService {
         @Inject(FileService) private fileService: FileService,
     ) {
         this.openai = new OpenAI({
-            apiKey: OPENAI_API_KEY,
+            apiKey: process.env.OPENAI_API_KEY,
         });
     }
 

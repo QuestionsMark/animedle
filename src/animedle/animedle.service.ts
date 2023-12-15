@@ -5,7 +5,6 @@ import { ResponseService } from 'src/common/response/response.service';
 import { User } from 'src/user/entities/user.entity';
 import { AnimedleTry } from './entities/animedle-try.entity';
 import { HttpService } from '@nestjs/axios';
-import { ANIME_POPULARITY_MIN } from 'config/config';
 
 @Injectable()
 export class AnimedleService {
@@ -362,7 +361,7 @@ export class AnimedleService {
                 page: Math.floor(Math.random() * 3 + 1),
                 perPage: 50,
                 format_in: [AnimedleNamespace.Format.Movie, AnimedleNamespace.Format.OVA, AnimedleNamespace.Format.Special, AnimedleNamespace.Format.TV],
-                popularity_greater: ANIME_POPULARITY_MIN,
+                popularity_greater: process.env.ANIME_POPULARITY_MIN,
             };
         }
 

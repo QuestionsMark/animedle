@@ -3,7 +3,6 @@ import { ResponseService } from 'src/common/response/response.service';
 import { Auth, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { UserService } from 'src/user/user.service';
 import { sign } from 'jsonwebtoken';
-import { SECRET_KEY } from 'config/config';
 import { User } from 'src/user/entities/user.entity';
 import { v4 as uuid } from 'uuid';
 import { compare, genSalt, hash } from 'bcrypt';
@@ -20,7 +19,7 @@ export class AuthService {
     private createToken(currentTokenId: string): Auth.CreateToken {
         const payload: Auth.JwtPayload = { id: currentTokenId };
         const expiresIn = 60 * 60 * 24;
-        const accessToken = sign(payload, SECRET_KEY, { expiresIn });
+        const accessToken = sign(payload, process.env.SECRET_KEY, { expiresIn });
         return {
             accessToken,
             expiresIn,

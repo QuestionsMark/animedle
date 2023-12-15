@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from 'passport-jwt';
-import { SECRET_KEY } from "config/config";
 import { User } from "../user/entities/user.entity";
 import { Auth } from "src/types";
 import { Request } from "express";
@@ -15,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, Auth.Strategy.Jwt) {
     constructor() {
         super({
             jwtFromRequest: cookieExtractor,
-            secretOrKey: SECRET_KEY,
+            secretOrKey: process.env.SECRET_KEY,
         })
     }
 

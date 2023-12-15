@@ -3,7 +3,7 @@ import { diskStorage } from 'multer';
 import { v4 as uuid } from 'uuid';
 
 export const multerStorageDir = () => {
-    return path.join(__dirname, '../../../storage');
+    return path.join(__dirname, process.env.STAGE === 'production' ? '../../storage' : '../../../storage');
 };
 
 export const multerStorage = (dest: string) => {

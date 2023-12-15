@@ -323,7 +323,7 @@ export class UserService {
     async getSkins(user: User, page: number, limit: number): Promise<ServerSuccessfullResponse<string[]>> {
         const [skins, count] = await FileItem.findAndCount({
             where: {
-                userSkin: {
+                usersSkins: {
                     id: user.id,
                 },
             },

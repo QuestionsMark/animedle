@@ -1,6 +1,6 @@
 import { AnimedleTry } from "src/animedle/entities/animedle-try.entity";
 import { FileItem } from "src/file/entities/file.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User extends BaseEntity {
@@ -72,13 +72,13 @@ export class User extends BaseEntity {
     })
     premiumCoins: number;
 
-    @OneToOne(() => FileItem)
-    @JoinColumn()
+    @ManyToOne(() => FileItem, e => e.users)
     avatar: FileItem;
 
     @OneToMany(() => AnimedleTry, e => e.user)
     animedleTries: AnimedleTry[];
 
-    @OneToMany(() => FileItem, e => e.userSkin)
+    @ManyToMany(() => FileItem, e => e.usersSkins)
+    @JoinTable()
     skins: FileItem[];
 }

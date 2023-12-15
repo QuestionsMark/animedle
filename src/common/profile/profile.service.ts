@@ -22,7 +22,7 @@ export class ProfileService {
 
         const [, count] = await FileItem.findAndCount({
             where: {
-                userSkin: {
+                usersSkins: {
                     id: user.id,
                 },
             },

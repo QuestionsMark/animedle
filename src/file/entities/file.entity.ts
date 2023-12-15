@@ -1,5 +1,5 @@
 import { User } from "src/user/entities/user.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class FileItem extends BaseEntity {
@@ -14,9 +14,9 @@ export class FileItem extends BaseEntity {
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToOne(() => User, e => e.avatar)
-    user: User;
+    @OneToMany(() => User, e => e.avatar)
+    users: User[];
 
-    @ManyToOne(() => User, e => e.skins)
-    userSkin: User;
+    @ManyToMany(() => User, e => e.skins)
+    usersSkins: User[];
 }

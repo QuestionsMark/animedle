@@ -312,6 +312,15 @@ export class UserService {
                 withHint: hintType,
                 createdAt,
             }));
+        results.push({
+            ad: true,
+            createdAt: new Date(),
+            id: String(page),
+            solved: false,
+            title: '',
+            tries: 0,
+            withHint: null,
+        });
 
         return this.responseService.sendSuccessfullResponse(results, count);
     }
@@ -340,6 +349,8 @@ export class UserService {
     }
 
     async getTop(page: number, limit: number): Promise<ServerSuccessfullResponse<UserNamespace.RankingItem[]>> {
+        const take = this.responseService.limit(limit);
+        const truePage = Number.isNaN(Number(page)) || Number(page) <= 0 ? 1 : Number(page);
         const [users, count] = await User.findAndCount({
             relations: ['avatar'],
             order: {
@@ -347,10 +358,25 @@ export class UserService {
                 bestWinStreak: 'DESC',
             },
             skip: this.responseService.skip(page, limit),
-            take: this.responseService.limit(limit),
+            take,
         });
 
-        const results = users.map(({ avatar, bestWinStreak, id, points, username }) => ({ avatar: avatar.id, bestWinStreak, id, points, username }));
+        const results: UserNamespace.RankingItem[] = users.map(({ avatar, bestWinStreak, id, points, username }, i) => ({
+            avatar: avatar.id,
+            bestWinStreak,
+            id,
+            points,
+            top: i + 1 + (truePage - 1) * take,
+            username,
+        }));
+        results.push({
+            ad: true,
+            avatar: '',
+            bestWinStreak: 0,
+            id: String(page),
+            points: 0,
+            username: '',
+        });
 
         return this.responseService.sendSuccessfullResponse(results, count);
     }

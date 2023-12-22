@@ -78,6 +78,7 @@ export namespace Animedle {
         title: string;
         withHint: Animedle.HintType | null;
         createdAt: Date;
+        ad?: boolean;
     }
 
     // axios

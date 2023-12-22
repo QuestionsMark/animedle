@@ -25,7 +25,7 @@ export class FileService {
             i++;
         }
         return filesList;
-    };
+    }
 
     async unlinkFiles(files: MulterFile[] | { filename: string }[]): Promise<void> {
         for (const { filename } of files) {

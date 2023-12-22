@@ -13,5 +13,5 @@ export interface MulterDiskUploadedFiles {
 
 export enum CronExpression {
     EveryMidnight = '0 0 * * *',
-    Every5Mins = '*/5 * * * *',
+    // EveryMidnight = '*/10 * * * * *',
 }

@@ -11,5 +11,7 @@ export namespace User {
         points: number;
         bestWinStreak: number;
         avatar: string;
+        ad?: boolean;
+        top?: number;
     }
 }

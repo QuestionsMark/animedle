@@ -17,6 +17,7 @@ import { FileService } from 'src/file/file.service';
 import { createUserSchema, deleteUserSchema, guessSchema } from 'src/validation';
 import { compare } from 'bcrypt';
 import { DeleteUserDto } from './dto/delete-user.dto';
+import { RewardDto } from './dto/reward.dto';
 
 @Injectable()
 export class UserService {
@@ -402,6 +403,13 @@ export class UserService {
         user.premiumCoins = user.premiumCoins - 10;
         await user.save();
 
+        return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user));
+    }
+
+    async reward(user: User, rewardDto: RewardDto): Promise<ServerSuccessfullResponse<ProfileNamespace.ContextValue>> {
+        const { coins } = rewardDto;
+        user.premiumCoins += coins;
+        await user.save();
         return this.responseService.sendSuccessfullResponse(await this.profileService.getContextValue(user));
     }
 

@@ -2,12 +2,13 @@ import { Controller, Get, Post, Body, Patch, HttpCode, UseGuards, Param, Query, 
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UseHintDto } from './dto/use-hint.dto';
-import { Animedle, Auth, Profile, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
+import { Animedle, Auth, Profile, Reward, ServerSuccessfullResponse, User as UserNamespace } from 'src/types';
 import { AuthGuard } from '@nestjs/passport';
 import { UserObject } from 'src/decorators/user.decorator';
 import { User } from './entities/user.entity';
 import { GuesDto } from './dto/gues.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
+import { RewardDto } from './dto/reward.dto';
 
 @Controller('user')
 export class UserController {
@@ -93,6 +94,15 @@ export class UserController {
         @Param('skinId') skinId: string,
     ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
         return this.userService.changeAvatar(user, skinId);
+    }
+
+    @Patch('/reward')
+    @UseGuards(AuthGuard(Auth.Strategy.Jwt))
+    reward(
+        @UserObject() user: User,
+        @Body() rewardDto: RewardDto,
+    ): Promise<ServerSuccessfullResponse<Profile.ContextValue>> {
+        return this.userService.reward(user, rewardDto);
     }
 
     @Delete()

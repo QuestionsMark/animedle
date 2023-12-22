@@ -15,3 +15,12 @@ export enum CronExpression {
     EveryMidnight = '0 0 * * *',
     // EveryMidnight = '*/10 * * * * *',
 }
+
+export enum RewardType {
+    Coins = 'Coins',
+}
+
+export interface Reward {
+    type: RewardType;
+    coins: number;
+}

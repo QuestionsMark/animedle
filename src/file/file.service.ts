@@ -1,8 +1,6 @@
-import * as path from 'path';
 import { readdir, unlink, writeFile } from 'fs/promises';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
-import { multerStorageDir } from 'src/utils/multer.util';
 import { FileItem } from './entities/file.entity';
 import { ResponseService } from 'src/common/response/response.service';
 import { MulterFile } from 'src/types';
@@ -29,7 +27,7 @@ export class FileService {
 
     async unlinkFiles(files: MulterFile[] | { filename: string }[]): Promise<void> {
         for (const { filename } of files) {
-            await unlink(path.join(multerStorageDir(), filename));
+            await unlink(`storage/${filename}`);
         }
     }
 
@@ -46,7 +44,7 @@ export class FileService {
 
             res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
             res.sendFile(file.filename, {
-                root: path.join(multerStorageDir()),
+                root: 'storage',
             });
         } catch (e) {
             res.status(500).json(this.responseService.sendErrorResponse('Something went wrong, try again later.'));

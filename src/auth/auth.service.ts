@@ -18,7 +18,7 @@ export class AuthService {
 
     private createToken(currentTokenId: string): Auth.CreateToken {
         const payload: Auth.JwtPayload = { id: currentTokenId };
-        const expiresIn = 60 * 60 * 24;
+        const expiresIn = 60 * 60 * 24 * 182;
         const accessToken = sign(payload, process.env.SECRET_KEY, { expiresIn });
         return {
             accessToken,

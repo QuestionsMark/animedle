@@ -3,6 +3,7 @@ export namespace User {
     export interface ContextValue {
         id: string;
         username: string;
+        review: number | null;
     }
 
     export interface RankingItem {

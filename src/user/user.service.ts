@@ -29,8 +29,8 @@ export class UserService {
         @Inject(ProfileService) private profileService: ProfileService,
     ) { }
 
-    async getUserResponse(id: string): Promise<UserNamespace.ContextValue> {
-        const { username } = await User.findOneOrFail({
+    async getContextValue(id: string): Promise<UserNamespace.ContextValue> {
+        const { review, username } = await User.findOneOrFail({
             where: {
                 id,
             },
@@ -39,6 +39,7 @@ export class UserService {
         return {
             id,
             username,
+            review,
         };
     }
 

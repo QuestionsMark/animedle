@@ -49,7 +49,7 @@ export class AuthService {
     };
 
     async isLogged(id: string): Promise<ServerSuccessfullResponse<UserNamespace.ContextValue>> {
-        return this.responseService.sendSuccessfullResponse(await this.userService.getUserResponse(id));
+        return this.responseService.sendSuccessfullResponse(await this.userService.getContextValue(id));
     }
 
     async login(loginDto: LoginDto): Promise<ServerSuccessfullResponse<Auth.Response>> {
@@ -70,7 +70,7 @@ export class AuthService {
 
         return this.responseService.sendSuccessfullResponse({
             token: token.accessToken,
-            user: await this.userService.getUserResponse(user.id),
+            user: await this.userService.getContextValue(user.id),
         });
     }
 

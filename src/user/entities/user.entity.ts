@@ -72,6 +72,14 @@ export class User extends BaseEntity {
     })
     premiumCoins: number;
 
+    @Column({
+        type: 'tinyint',
+        unsigned: true,
+        nullable: true,
+        default: null,
+    })
+    review: number | null;
+
     @ManyToOne(() => FileItem, e => e.users)
     avatar: FileItem;
 
